@@ -1,38 +1,39 @@
+// Importa dependencias principales
 const express = require('express');
 const axios = require('axios');
 const app = express();
 
 console.log('[Recomendaciones] Iniciando servicio...\n');
 
-// Configuración
+// Configuración de URLs y timeout
 const CATALOGO_URL = 'http://localhost:3000/peliculas';
 const TIMEOUT = 5000; // 5 segundos
 
-// Middlewares
+// Middleware de logging para registrar cada petición
 app.use((req, res, next) => {
   console.log(`[Recomendaciones] ${req.method} ${req.originalUrl}`);
   next();
 });
 
-// Endpoint principal
+// Endpoint principal para recomendar una película por género
 app.get('/recomendar/:genero', async (req, res) => {
   const genero = decodeURIComponent(req.params.genero);
   console.log(`[Recomendaciones] 🎯 Género solicitado: "${genero}"`);
 
   try {
-    // 1. Obtener películas del catálogo
+    // 1. Llama al servicio catálogo para obtener películas del género solicitado
     const url = `${CATALOGO_URL}/${encodeURIComponent(genero)}`;
     console.log(`[Recomendaciones] 🔗 Llamando a catálogo: ${url}`);
     
     const response = await axios.get(url, { timeout: TIMEOUT });
     const peliculas = response.data;
 
-    // 2. Validar respuesta
+    // 2. Valida que la respuesta sea un arreglo
     if (!Array.isArray(peliculas)) {
       throw new Error('Formato de datos inválido del catálogo');
     }
 
-    // 3. Seleccionar recomendación
+    // 3. Si no hay películas, responde con error 404
     if (peliculas.length === 0) {
       console.log('[Recomendaciones] ⚠️ No hay películas para este género');
       return res.status(404).json({
@@ -41,10 +42,11 @@ app.get('/recomendar/:genero', async (req, res) => {
       });
     }
 
+    // 4. Selecciona una película aleatoria para recomendar
     const recomendacion = peliculas[Math.floor(Math.random() * peliculas.length)];
     console.log(`[Recomendaciones] 🎬 Recomendación: "${recomendacion.titulo}"`);
 
-    // 4. Responder
+    // 5. Responde con la recomendación y metadatos
     res.json({
       genero,
       recomendacion,
@@ -53,13 +55,14 @@ app.get('/recomendar/:genero', async (req, res) => {
     });
 
   } catch (error) {
+    // Manejo de errores de comunicación o internos
     console.error('[Recomendaciones] ❌ Error:', {
       message: error.message,
       url: error.config?.url,
       status: error.response?.status
     });
 
-    // Manejo de errores detallado
+    // Responde según el tipo de error
     if (error.response) {
       res.status(502).json({
         error: 'Error en el servicio catálogo',
@@ -80,7 +83,7 @@ app.get('/recomendar/:genero', async (req, res) => {
   }
 });
 
-// Iniciar servidor
+// Inicia el servidor en el puerto 3002
 const PORT = 3002;
 app.listen(PORT, () => {
   console.log(`\n[Recomendaciones] 🚀 Servicio listo en http://localhost:${PORT}`);
