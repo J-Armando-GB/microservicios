@@ -1,0 +1,25 @@
+{
+  "name": "recomendacion-peliculas",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/J-Armando-GB/microservicios.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/J-Armando-GB/microservicios/issues"
+  },
+  "homepage": "https://github.com/J-Armando-GB/microservicios#readme",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.10.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.0"
+  }
+}

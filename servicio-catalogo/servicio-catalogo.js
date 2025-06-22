@@ -6,7 +6,7 @@ const app = express();
 console.log('[Catalogo] Iniciando servicio...\n');
 
 // Configuración de conexión a la base de datos MongoDB
-const MONGO_URI = 'mongodb://localhost:27017/catalogo';
+const MONGO_URI = 'mongodb+srv://microservicios_user:12345@cluster0.scoabgo.mongodb.net/catalogo?retryWrites=true&w=majority&appName=Cluster0';
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
